@@ -1,0 +1,42 @@
+@model IEnumerable<Crypto.Models.Dtos.ExchangePairs.ExchangePairIndexDto>
+
+@{
+    ViewData["Title"] = "Pairs";
+}
+
+<h1>Pairs</h1>
+
+<table class="table table-striped table-hover table-sm">
+    <thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Pair)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ExchangeName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pair)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExchangeName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td style="padding-top: 0; padding-bottom: 0; vertical-align: middle">
+                <a href="@($"/orders/create/{item.Id}")" class="btn btn-outline-primary btn-sm">Order</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

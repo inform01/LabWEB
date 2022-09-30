@@ -1,0 +1,48 @@
+@page "{ExchangePairId:int}"
+@model Crypto.Pages.Orders.Create
+
+<h1>Create</h1>
+
+<h4>Order</h4>
+<hr />
+<dl class="row">
+    <dt class = "col-sm-2">
+        @Html.DisplayNameFor(model => model.PairInfoModel.PairName)
+    </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.PairInfoModel.PairName)
+    </dd>
+    
+    <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PairInfoModel.ExchangeName)
+        </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.PairInfoModel.ExchangeName)
+    </dd>
+    
+    <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PairInfoModel.Price)
+        </dt>
+    <dd class = "col-sm-10">
+        @Html.DisplayFor(model => model.PairInfoModel.Price)
+    </dd>
+</dl>
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.CreateOrderModel.Volume" class="control-label"></label>
+                <input asp-for="@Model.CreateOrderModel.Volume" type="number" min="0" class="form-control" />
+                <span asp-validation-for="@Model.CreateOrderModel.Volume" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

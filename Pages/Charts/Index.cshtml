@@ -1,0 +1,105 @@
+@page
+@using ChartJSCore.Helpers
+@using ChartJSCore.Models
+@using ColorMine.ColorSpaces
+@model Crypto.Pages.Charts.ChartsPageModel
+
+@{
+    var rng = new Random();
+
+    Func<ChartColor> colorGenerator = () => {
+        var hsl = new Hsl
+        {
+            H = rng.Next(180, 280),
+            S = (double)rng.Next(42, 98) / 100,
+            L = (double)rng.Next(40, 90) / 100,
+        };
+        var rgb = hsl.ToRgb();
+        return ChartColor.FromRgb((byte)rgb.R, (byte)rgb.G, (byte)rgb.B);
+    };
+
+    var pairsChart = new Chart
+    {
+        Type = Enums.ChartType.Pie,
+        Data = new Data
+        {
+            Labels = Model.PairsInfos
+                .Select(x => x.PairName)
+                .ToList(),
+            Datasets = new List<Dataset>
+            {
+                new PieDataset()
+                {
+                    Label = "Pairs chart",
+                    Data = Model.PairsInfos
+                        .Select(x => new double?(x.ExchangesCount))
+                        .ToList(),
+                    HoverOffset = 4,
+                    BackgroundColor = Model.PairsInfos
+                        .Select(_ => colorGenerator())
+                        .ToList(),
+                    BorderColor = new List<ChartColor>
+                    {
+                        ChartColor.FromHexString("#839496")
+                    },
+                }
+            }
+        }
+    };
+    
+    var exchangesChart = new Chart
+    {
+        Type = Enums.ChartType.HorizontalBar,
+        Data = new Data
+        {
+            Labels = Model.ExchangeInfos
+                .Select(x => x.ExchangeName)
+                .ToList(),
+            Datasets = new List<Dataset>
+            {
+                new BarDataset
+                {
+                    Label = "Average pair price",
+                    Data = Model.ExchangeInfos
+                        .Select(x => x.AveragePairPrice)
+                        .Select(x => x is null ? null : new double?(decimal.ToDouble(x.Value)))
+                        .ToList(),
+                    BackgroundColor = new List<ChartColor>
+                    {
+                        colorGenerator()
+                    },
+                    BorderColor = new List<ChartColor>
+                    {
+                        ChartColor.FromHexString("#839496")
+                    },
+                },
+            }
+        }
+    };
+}
+
+<h1>Average instrument price</h1>
+<div class="w-100 d-flex justify-content-center">
+    <div style="max-width: 80vw; min-width: 500px">
+        <canvas id="exchangeschart"></canvas>
+    </div>
+</div>
+
+<br/>
+<hr/>
+<br/>
+
+<h1>Pairs</h1>
+<div class="w-100 d-flex justify-content-center">
+  <div style="max-width: 500px; width: 500px">
+      <canvas id="pairschart"></canvas>
+  </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js"></script>
+    <script>
+        @Html.Raw(exchangesChart.CreateChartCode("exchangeschart"))
+        @Html.Raw(pairsChart.CreateChartCode("pairschart"))
+    </script>
+}
